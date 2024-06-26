@@ -7,13 +7,13 @@ from datetime import timedelta, date
 
 
 def userInfo():
-    myemail = "emailaddress" #Please update this with your email address
-    mypassword = "mypassword" #Please update this with your password 
+    myemail = "youremailaddress" #update with your email address
+    mypassword = "yourpassword" #update with your password
 
-    email = driver.find_element("xpath", '//input[@id="mat-input-1"]') #Xpath for email field
-    email.send_keys(myemail) 
+    email = driver.find_element("xpath", '//input[@id="mat-input-1"]') #update xpath according to your gym
+    email.send_keys(myemail)
 
-    passwrd = driver.find_element("xpath", '//input[@id="mat-input-2"]') #Xpath for Password field
+    passwrd = driver.find_element("xpath", '//input[@id="mat-input-2"]') #update xpath according to your gym
     passwrd.send_keys(mypassword)
 
     time.sleep(2)
@@ -21,7 +21,7 @@ def userInfo():
 
 def login():
     try:
-        loginButton = driver.find_element("xpath", '//*[@class="mat-focus-indicator ng-tns-c190-4 mat-flat-button mat-button-base mat-primary"]') #Xpath for Login button
+        loginButton = driver.find_element("xpath", '//*[@class="mat-focus-indicator ng-tns-c190-4 mat-flat-button mat-button-base mat-primary"]') #update xpath according to your gym
         driver.execute_script("arguments[0].click();", loginButton)
         print('Successfull login')
     except:
@@ -32,9 +32,9 @@ def login():
 
 def bookingPage():
     try:
-        newBooking = driver.find_element("xpath",'//*[@routerlink="/workouts"]')  ##Xpath for navigating to booking page
+        newBooking = driver.find_element("xpath",'//*[@routerlink="/workouts"]') #update xpath according to your gym
         driver.execute_script("arguments[0].click();", newBooking)
-        #print("On booking bookingPage")  #Un-comment if script doesnt work
+        print("On booking bookingPage")
 
     except:
         print('unable to go to booking page')
@@ -42,58 +42,47 @@ def bookingPage():
         driver.close()
   
     time.sleep(10)
-    #chooseDay()
-    selectTime() # update once chooseday works
+    chooseDay() 
  
-def selectTime():
+def chooseDay():   
     try:
-        bookTimeSlots = driver.find_element("xpath", '//*[contains(text(), "8:00 - 8:30 PM")]') #update time of your choice
-        driver.execute_script("arguments[0].click();", bookTimeSlots)
-        #print("onconfirmation page") 
+        dateToday = date.today() + timedelta(days=2) #update time delta according to your wish
+        print(date.today())
+        formattedDate = dateToday.strftime("%d")
+        print(formattedDate)
+        #print(type(formattedDate))
+        bookyesButton = driver.find_element("xpath", f'//p[contains(text(), "{formattedDate}")]') #update xpath according to your gym. this is take date in advance to book
+        driver.execute_script("arguments[0].click();", bookyesButton)
+        print("day selected fine")
     except:
+        print("issue in choose day")
         driver.quit()
         driver.close()
 
     time.sleep(5)
-    confirmBooking()
+    selectTime()
 
-# only working for current date
-######################## working till here ######################################################
-def chooseDay():
+def selectTime():
     try:
-        bookingDate = date.today() + + timedelta(days=2)
-        #print(dateToday)
-        #formatted_date = dateToday.strftime("%A %B %d")
-        #formatted_Bdate = 27
-        formatted_Bdate = bookingDate.strftime("%d")
-        print(formatted_Bdate)  
-
-        #-------------------------------------------  
-        xyz = driver.find_element("xpath",'//*[.="27"]') # update with variable later
-        #print("test")
-        print(xyz)
-
-
-        #driver.execute_script("arguments[0].click();", xyz) # this line is not working and requires some work
-        #driver.execute_script("arguments[0].click();", xyz)
-        #print("working new booking, p[lease select time now]")
-
+        bookTimeSlots = driver.find_element("xpath", '//*[contains(text(), "8:30 - 9:15 AM")]') # update time of your choice and xpath according to your gym
+        driver.execute_script("arguments[0].click();", bookTimeSlots)
+        print("Time selected and now navigating to confirmation page")
     except:
-        print('unable to select day')
-        #driver.quit()
-        #driver.close()
+        print("issue in select time")
+        driver.quit()
+        driver.close()
 
-
-    #time.sleep(5)
-    #selectTime()
-
-# --------------------------------------updated but can only be checked after choose date sorts out--------------------#   
+    time.sleep(15)
+    confirmBooking()
 
 def confirmBooking():
     try:
-        bookyesButton = driver.find_element_by_xpath("xpath", '//*[contains(text(), "Confirm Booking")]') #xpath selected. Run for after few days while checking
-        driver.execute_script("arguments[0].click();", bookyesButton)
+        bookyesButton = driver.find_element("xpath", '//*[contains(text(), "Confirm Booking")]') #xpath selected. Run for after few days while checking
+        driver.execute_script("arguments[0].click();", bookyesButton) # uncomment after date issue
+        print("booking confirmed")
     except:
+        print("booking not confirmed")
+
         driver.quit()
         driver.close()
 
@@ -101,7 +90,7 @@ def confirmBooking():
 if __name__ == '__main__':
     # Load chrome
     driver = webdriver.Chrome()
-    driver.get("https://myaltea.club/")
+    driver.get("https://myaltea.club/") #name of your gym
 
     time.sleep(2)
 
